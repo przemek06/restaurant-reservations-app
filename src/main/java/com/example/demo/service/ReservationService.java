@@ -38,14 +38,15 @@ public class ReservationService {
         this.cancellationCodes = new HashMap<>();
     }
 
-    public ResponseEntity<List<ReservationEntity>> getReservations(String date) {
+    public ResponseEntity<List<Reservation>> getReservations(String date) {
         Date formatted;
         try {
             formatted = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         } catch (ParseException e) {
             return ResponseEntity.badRequest().body(new ArrayList<>());
         }
-        return ResponseEntity.ok(reservationRepository.findAllByDate(formatted));
+        List<ReservationEntity> entities =reservationRepository.findAllByDate(formatted);
+        return ResponseEntity.ok(entities.stream().map(Reservation::new).collect(Collectors.toList()));
     }
 
     public ResponseEntity<String> makeReservation(Reservation reservation) {

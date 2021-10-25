@@ -20,7 +20,7 @@ public class ReservationController {
     ReservationService reservationService;
 
     @GetMapping("/reservations")
-    public ResponseEntity<List<ReservationEntity>> getReservations(@RequestParam String date) {
+    public ResponseEntity<List<Reservation>> getReservations(@RequestParam String date) {
         return reservationService.getReservations(date);
     }
 
