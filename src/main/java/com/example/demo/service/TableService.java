@@ -6,6 +6,7 @@ import com.example.demo.repository.ReservationRepository;
 import com.example.demo.repository.TableRepository;
 import org.joda.time.format.ISODateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,17 +22,18 @@ public class TableService {
     @Autowired
     TableRepository tableRepository;
 
-    public List<Table> findSuitableTables(int seats, String start, int duration) {
+    public ResponseEntity<List<Table>> findSuitableTables(int seats, String start, int duration) {
         Date date;
         try{
             date = ISODateTimeFormat
                     .dateTimeNoMillis()
                     .parseDateTime(start.replace(" ", "+")).toDate();
         } catch (Exception e){
-            return new ArrayList<>();
+            return ResponseEntity.badRequest().body(new ArrayList<>());
         }
         List<TableEntity> tables = tableRepository.findSuitableTables(seats);
         List<Long> busyTableNumbers=reservationRepository.findBusyTables(date, duration);
-        return tables.stream().filter(t->!busyTableNumbers.contains(t.getNumber())).map(Table::new).collect(Collectors.toList());
+        List<Table> result= tables.stream().filter(t->!busyTableNumbers.contains(t.getNumber())).map(Table::new).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 }

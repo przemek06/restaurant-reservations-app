@@ -20,6 +20,6 @@ public class TableController {
     public ResponseEntity<List<Table>> findSuitableTables(@RequestParam int min_seats,
                                                           @RequestParam String start_date,
                                                           @RequestParam int duration) {
-        return ResponseEntity.ok(tableService.findSuitableTables(min_seats, start_date, duration));
+        return tableService.findSuitableTables(min_seats, start_date, duration);
     }
 }
